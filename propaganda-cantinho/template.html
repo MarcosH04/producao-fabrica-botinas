@@ -14,6 +14,8 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:12px}
 body{background:var(--ink);color:var(--cream);font-family:var(--f-body);font-size:16px;line-height:1.55;margin:0}
 .wrap{max-width:1080px;margin:0 auto;padding-inline:16px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:.02em}
@@ -38,7 +40,7 @@ button{font:inherit;cursor:pointer}
 @keyframes pulse{70%{box-shadow:0 0 0 10px #5fd18a00}100%{box-shadow:0 0 0 0 #5fd18a00}}
 .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:12px;font-weight:800;text-decoration:none;border:1px solid var(--gold);transition:transform .15s, background .15s}
-.btn:hover{transform:translateY(-2px)}
+@media (hover:hover){.btn:hover{transform:translateY(-2px)}}
 .btn-gold{background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:#1b1206;border-color:transparent}
 .btn-ghost{background:transparent;color:var(--gold-hi)}
 .stack{position:relative;height:420px}
@@ -69,9 +71,11 @@ section{padding-block:64px}
 .step-title{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
 .step-title .n{font-family:var(--f-display);font-weight:800;color:var(--ink);background:var(--gold);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:.95rem;flex:none}
 .step-title h3{font-size:1.15rem}
+.swipe{display:none;margin-left:auto;font-size:.78rem;color:var(--muted);font-weight:700;white-space:nowrap}
+.mbar{display:none}
 .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .opt{position:relative;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:0;color:var(--cream);overflow:hidden;transition:border-color .15s, transform .15s}
-.opt:hover{transform:translateY(-2px);border-color:#6b5638}
+@media (hover:hover){.opt:hover{transform:translateY(-2px);border-color:#6b5638}}
 .opt[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold) inset}
 .opt[aria-pressed="true"]::after{content:"✓";position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#1b1206;font-weight:800;display:grid;place-items:center;font-size:.85rem}
 .opt img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
@@ -140,7 +144,7 @@ section{padding-block:64px}
 footer{border-top:1px solid var(--line);background:var(--panel);padding-block:40px}
 .foot{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:24px;align-items:center}
 .foot img{width:72px;height:72px;border-radius:50%;border:1px solid var(--gold)}
-.foot dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.92rem}
+.foot dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:.92rem}
 .foot dt{color:var(--gold);font-weight:800;text-transform:uppercase;font-size:.72rem;letter-spacing:.12em;padding-top:3px}
 .foot dd{margin:0;color:var(--cream);word-break:break-word}
 
@@ -151,7 +155,38 @@ footer{border-top:1px solid var(--line);background:var(--panel);padding-block:40
   .quiz-art{display:none}
   .foot{grid-template-columns:minmax(0,1fr)}
 }
-@media (max-width:480px){ .opts{grid-template-columns:repeat(2,minmax(0,1fr))} .grid{grid-template-columns:repeat(2,minmax(0,1fr))} section{padding-block:48px} .quiz{padding:20px} }
+@media (max-width:640px){
+  body{font-size:15px;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  section{padding-block:44px}
+  .hero-in{padding-block:24px 28px;gap:12px}
+  .logo{width:84px;height:84px}
+  .hero h1{margin-top:12px}
+  .ctas .btn{flex:1 1 auto;justify-content:center}
+  .stack{height:230px;max-width:340px}
+  .stack img{width:52%}
+  .stack img:nth-child(3){left:24%;top:70px}
+  .badge99{bottom:0;right:0;font-size:.75rem}.badge99 b{font-size:1.05rem}
+  .sec-head{margin-bottom:20px}
+  .step{margin-bottom:22px}
+  .swipe{display:inline}
+  .opts{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-inline:-16px;padding:4px 16px 10px;scroll-padding-inline:16px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .opts::-webkit-scrollbar{display:none}
+  .opt{flex:0 0 44%;scroll-snap-align:start}
+  .opt.row{flex:1 1 0;min-height:60px}
+  .opt img,.opt .cup{aspect-ratio:4/3}
+  .opt .t small{display:none}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .quiz{padding:20px}
+  .q-answers button{padding:14px 16px}
+  .lb .nav{top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);transform:none}
+  .lb .prev{left:calc(50% - 56px)}.lb .next{right:calc(50% - 56px)}
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;gap:10px;align-items:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -10px 30px #0009;transition:transform .25s}
+  .mbar.away{transform:translateY(110%)}
+  .mbar .info{flex:1;min-width:0;display:grid;line-height:1.25}
+  .mbar .info small{color:var(--gold);font-weight:800;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase}
+  .mbar .info span{font-weight:700;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mbar .btn{padding:11px 16px;flex:none}
+}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -189,11 +224,11 @@ footer{border-top:1px solid var(--line);background:var(--panel);padding-block:40
     </div>
     <div class="builder">
       <div>
-        <div class="step"><div class="step-title"><span class="n">1</span><h3>Sua batata</h3></div><div class="opts" id="optBatata"></div></div>
-        <div class="step"><div class="step-title"><span class="n">2</span><h3>Seu copão</h3></div><div class="opts" id="optCopao"></div></div>
+        <div class="step"><div class="step-title"><span class="n">1</span><h3>Sua batata</h3><span class="swipe">arraste para o lado ›</span></div><div class="opts" id="optBatata"></div></div>
+        <div class="step"><div class="step-title"><span class="n">2</span><h3>Seu copão</h3><span class="swipe">arraste para o lado ›</span></div><div class="opts" id="optCopao"></div></div>
         <div class="step"><div class="step-title"><span class="n">3</span><h3>Pra acompanhar</h3></div><div class="opts" id="optBebida"></div></div>
       </div>
-      <aside class="ticket" aria-live="polite">
+      <aside class="ticket" id="ticket" aria-live="polite">
         <h3>CANTINHO GOURMET</h3>
         <div class="sub">seu pedido</div>
         <ul id="ticketList"></ul>
@@ -243,6 +278,11 @@ footer{border-top:1px solid var(--line);background:var(--panel);padding-block:40
     <a class="btn btn-gold" href="#combo">Pedir agora</a>
   </div>
 </footer>
+
+<div class="mbar" id="mbar">
+  <div class="info"><small id="mbarCount">Seu combo</small><span id="mbarText">Escolha seus itens</span></div>
+  <a class="btn btn-gold" href="#ticket" id="mbarBtn">Ver pedido</a>
+</div>
 
 <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
   <button class="x" id="lbX" aria-label="Fechar">✕</button>
@@ -299,6 +339,9 @@ function updateTicket(){
   msg.value = itens.length
     ? `Oi, Cantinho Gourmet! 😋 Quero fazer um pedido:\n${itens.join("\n")}\n\nMeu endereço: \nForma de pagamento: `
     : "Escolha pelo menos um item para montar a mensagem.";
+  const n = itens.length;
+  mbarCount.textContent = n ? `Seu combo · ${n} ${n>1?"itens":"item"}` : "Seu combo";
+  mbarText.textContent = n ? [b?.nome, c?.nome, d && d.id!=="nada" ? d.nome : null].filter(Boolean).join(" + ") : "Escolha seus itens";
   copyBtn.disabled = !itens.length;
   copyBtn.style.opacity = itens.length ? 1 : .5;
 }
@@ -311,6 +354,13 @@ copyBtn.addEventListener("click", () => {
     navigator.clipboard.writeText(msg.value).then(done).catch(() => { msg.select(); toast.textContent = "Texto selecionado: use Ctrl+C (ou segure e copie)."; });
   } catch(e){ msg.select(); toast.textContent = "Texto selecionado: use Ctrl+C (ou segure e copie)."; }
 });
+
+/* mobile bar: hide in the hero and while the ticket is on screen */
+if ("IntersectionObserver" in window){
+  const seen = new Set();
+  const io = new IntersectionObserver(es => { es.forEach(e => e.isIntersecting ? seen.add(e.target) : seen.delete(e.target)); mbar.classList.toggle("away", seen.size>0); });
+  [document.getElementById("ticket"), document.querySelector(".hero")].forEach(el => io.observe(el));
+}
 
 /* status by Brasília time: open 18:00–23:59 */
 function updateStatus(){
@@ -386,7 +436,7 @@ filters.innerHTML = CATS.map(([v,t])=>`<button type="button" data-c="${v}" aria-
 filters.querySelectorAll("button").forEach(b => b.onclick = () => { cat=b.dataset.c; filters.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); renderGrid(); });
 function renderGrid(){
   visible = FOTOS.filter(f => cat==="todas" || f[2]===cat);
-  grid.innerHTML = visible.map((f,i)=>`<button type="button" data-i="${i}"><img src="${IMG[f[0]]}" alt="${f[1]}" loading="lazy"><span>${f[1]}</span></button>`).join("");
+  grid.innerHTML = visible.map((f,i)=>`<button type="button" data-i="${i}"><img src="${IMG[f[0]]}" alt="${f[1]}"><span>${f[1]}</span></button>`).join("");
   grid.querySelectorAll("button").forEach(b => b.onclick = () => openLb(+b.dataset.i));
 }
 function openLb(i){ cur=(i+visible.length)%visible.length; lbImg.src=IMG[visible[cur][0]]; lbImg.alt=visible[cur][1]; lbCap.textContent=visible[cur][1]; lb.hidden=false; lbX.focus(); }
@@ -395,5 +445,8 @@ lbPrev.onclick = () => openLb(cur-1);
 lbNext.onclick = () => openLb(cur+1);
 lb.addEventListener("click", e => { if(e.target===lb) lb.hidden=true; });
 document.addEventListener("keydown", e => { if(lb.hidden) return; if(e.key==="Escape") lb.hidden=true; if(e.key==="ArrowLeft") openLb(cur-1); if(e.key==="ArrowRight") openLb(cur+1); });
+let tx=null;
+lb.addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, {passive:true});
+lb.addEventListener("touchend", e => { if(tx===null) return; const dx = e.changedTouches[0].clientX - tx; tx=null; if(Math.abs(dx)>50) openLb(cur + (dx<0?1:-1)); });
 renderGrid();
 </script>
