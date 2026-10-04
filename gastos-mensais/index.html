@@ -1,124 +1,180 @@
 <title>Caderneta de Gastos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
-/* Layout: caderneta de bolso — resumo e lançamento à esquerda, lista do mês à direita; uma coluna no celular */
+/* Layout: app de bolso divertido — cartão-resumo em degradê, rosca de categorias e lista com bolinhas coloridas; uma coluna no celular */
 :root {
-  --paper: #EEF2F6;
+  --bg: #F6F2FF;
+  --blob1: #FFD6E8;
+  --blob2: #CFF5E7;
+  --blob3: #FFE9B8;
   --sheet: #FFFFFF;
-  --ink: #17202A;
-  --muted: #5B6876;
-  --line: #D6DDE5;
-  --accent: #2346B8;
+  --ink: #241B3A;
+  --muted: #6E6487;
+  --line: #ECE6F7;
+  --field: #F7F4FD;
+  --accent: #7B3FF2;
+  --accent2: #FF4F9A;
   --accent-ink: #FFFFFF;
-  --accent-soft: #E2E8FA;
-  --mark: rgba(247, 214, 46, .55);
-  --ok: #1B7F52;
-  --warn: #B93D0B;
-  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --f-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
-  --f-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --r: 10px;
+  --accent-soft: #EEE5FF;
+  --mark: rgba(255, 196, 0, .45);
+  --ok: #12B886;
+  --warn: #FF5A3C;
+  --shadow: 0 10px 30px rgba(91, 52, 180, .10);
+  --c1: #7B3FF2; --c2: #12B886; --c3: #FF8A00; --c4: #3B82F6; --c5: #FF4F9A;
+  --c6: #E5484D; --c7: #0EA5B7; --c8: #F5B700; --c9: #A855F7; --c10: #8A8FA3;
+  --f-display: "Fredoka", "Nunito", system-ui, sans-serif;
+  --f-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+  --r: 22px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #0E1318; --sheet: #161D25; --ink: #E5EAF0; --muted: #94A1AE; --line: #2A3542;
-    --accent: #8FA7FF; --accent-ink: #0E1318; --accent-soft: #1D2847; --mark: rgba(214, 186, 40, .38);
-    --ok: #4DC48C; --warn: #F2905F; color-scheme: dark;
+    --bg: #151026; --blob1: #3A1B48; --blob2: #10343A; --blob3: #3A2E12;
+    --sheet: #1F1836; --ink: #F1ECFF; --muted: #A99FC6; --line: #31284D; --field: #281F44;
+    --accent: #A47BFF; --accent2: #FF6FAE; --accent-ink: #FFFFFF; --accent-soft: #33275A;
+    --mark: rgba(255, 196, 0, .30); --ok: #3DD6A3; --warn: #FF7A5F; --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #0E1318; --sheet: #161D25; --ink: #E5EAF0; --muted: #94A1AE; --line: #2A3542;
-  --accent: #8FA7FF; --accent-ink: #0E1318; --accent-soft: #1D2847; --mark: rgba(214, 186, 40, .38);
-  --ok: #4DC48C; --warn: #F2905F; color-scheme: dark;
+  --bg: #151026; --blob1: #3A1B48; --blob2: #10343A; --blob3: #3A2E12;
+  --sheet: #1F1836; --ink: #F1ECFF; --muted: #A99FC6; --line: #31284D; --field: #281F44;
+  --accent: #A47BFF; --accent2: #FF6FAE; --accent-ink: #FFFFFF; --accent-soft: #33275A;
+  --mark: rgba(255, 196, 0, .30); --ok: #3DD6A3; --warn: #FF7A5F; --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--f-body); }
-.wrap { max-width: 1000px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: grid; gap: 20px; }
+body {
+  background:
+    radial-gradient(40rem 30rem at 0% 0%, var(--blob1), transparent 70%),
+    radial-gradient(36rem 28rem at 100% 10%, var(--blob2), transparent 70%),
+    radial-gradient(40rem 30rem at 50% 100%, var(--blob3), transparent 70%),
+    var(--bg);
+  color: var(--ink); font: 15px/1.5 var(--f-body); min-height: 100%;
+}
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 16px; padding-block: 22px 56px; display: grid; gap: 20px; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
 
 header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
-.brand { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-.month { display: flex; align-items: center; gap: 6px; }
-.month h1 { margin: 0; font: 700 clamp(30px, 6vw, 44px)/1 var(--f-display); letter-spacing: -.02em; text-wrap: balance; min-width: 0; }
+.brand { font: 600 15px/1 var(--f-display); color: var(--accent); display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.brand::before { content: ""; width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(var(--c1), var(--c5), var(--c3), var(--c2), var(--c4), var(--c1)); }
+.month { display: flex; align-items: center; gap: 8px; }
+.month h1 { margin: 0; font: 700 clamp(32px, 7vw, 48px)/1 var(--f-display); letter-spacing: -.01em; min-width: 0; }
 .month h1 span { color: var(--muted); font-weight: 500; }
-.navbtn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--sheet); font-size: 18px; line-height: 1; display: grid; place-items: center; }
-.navbtn:hover { border-color: var(--accent); color: var(--accent); }
-.today { border: 0; background: none; color: var(--accent); font-weight: 600; padding: 6px 8px; }
+.navbtn { width: 42px; height: 42px; border-radius: 14px; border: 0; background: var(--sheet); box-shadow: var(--shadow); font: 600 22px/1 var(--f-display); display: grid; place-items: center; transition: transform .15s; }
+.navbtn:hover { color: var(--accent); transform: translateY(-2px); }
+.today { border: 0; background: var(--accent-soft); color: var(--accent); font-weight: 700; padding: 8px 14px; border-radius: 999px; }
 
-.notice { background: var(--accent-soft); border-radius: var(--r); padding: 10px 14px; font-size: 14px; }
+.notice { background: var(--sheet); border-radius: 16px; padding: 12px 16px; font-size: 14px; box-shadow: var(--shadow); }
 
-.grid { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 20px; align-items: start; }
-@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
-.col { display: grid; gap: 16px; min-width: 0; }
-.panel { background: var(--sheet); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; min-width: 0; }
-.label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0 0 6px; }
+.grid { display: grid; grid-template-columns: minmax(0, 370px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 780px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.col { display: grid; gap: 18px; min-width: 0; }
+.panel { background: var(--sheet); border-radius: var(--r); padding: 20px; min-width: 0; box-shadow: var(--shadow); }
+.label { font: 600 17px/1.2 var(--f-display); margin: 0 0 12px; }
 
-.total { font: 500 34px/1.1 var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
-.split { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: 14px; color: var(--muted); }
-.split b { color: var(--ink); font-weight: 500; }
-.hl { background: linear-gradient(transparent 55%, var(--mark) 55%); }
-.budget { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); display: grid; gap: 8px; }
-.bar { height: 8px; border-radius: 4px; background: var(--accent-soft); overflow: hidden; }
-.bar i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
-.bar.over i { background: var(--warn); }
+.hero { background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%); color: #FFFFFF; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; width: 180px; height: 180px; right: -50px; top: -60px; border-radius: 50%; background: rgba(255, 255, 255, .14); }
+.hero::before { content: ""; position: absolute; width: 90px; height: 90px; right: 60px; bottom: -40px; border-radius: 50%; background: rgba(255, 255, 255, .10); }
+.hero .label { color: rgba(255, 255, 255, .85); font-size: 15px; margin-bottom: 4px; }
+.total { font: 700 40px/1.1 var(--f-display); font-variant-numeric: tabular-nums; position: relative; }
+.split { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; font-size: 13px; position: relative; }
+.split span { background: rgba(255, 255, 255, .2); border-radius: 999px; padding: 4px 12px; }
+.split b { font-weight: 800; }
+.budget { margin-top: 16px; display: grid; gap: 8px; position: relative; }
+.hero .bar { background: rgba(255, 255, 255, .25); }
+.hero .bar i { background: #FFFFFF; }
+.hero .bar.over i { background: #FFE14D; }
+.bar { height: 10px; border-radius: 999px; background: var(--accent-soft); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
 .budget-row { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 14px; }
-.linkbtn { border: 0; background: none; color: var(--accent); padding: 0; font-weight: 600; font-size: 14px; }
-.over-txt { color: var(--warn); font-weight: 600; }
+.linkbtn { border: 0; background: none; color: var(--accent); padding: 0; font-weight: 700; font-size: 14px; }
+.hero .linkbtn { color: #FFFFFF; text-decoration: underline; text-underline-offset: 3px; }
+.over-txt { font-weight: 800; color: #FFE14D; }
 .inline-form { display: flex; gap: 8px; }
 .inline-form input { flex: 1; min-width: 0; }
+.hero input[type=text] { background: rgba(255, 255, 255, .95); color: #241B3A; border-color: transparent; }
+.hero .primary { background: #241B3A; }
 
-form.add { display: grid; gap: 10px; }
+form.add { display: grid; gap: 12px; }
 .field { display: grid; gap: 4px; min-width: 0; }
-.field > span { font-size: 13px; color: var(--muted); font-weight: 500; }
+.field > span { font-size: 13px; color: var(--muted); font-weight: 700; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-input[type=text], input[type=date], select { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); min-width: 0; }
-input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
-.checks { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; }
-.checks label { display: flex; align-items: center; gap: 6px; }
-.checks input { accent-color: var(--accent); width: 16px; height: 16px; }
-.primary { border: 0; background: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 11px 14px; border-radius: 8px; }
-.primary:disabled { opacity: .5; cursor: not-allowed; }
+input[type=text], input[type=date], select { width: 100%; padding: 11px 13px; border: 2px solid transparent; border-radius: 14px; background: var(--field); min-width: 0; }
+input:focus, select:focus { border-color: var(--accent); outline: none; }
+.catpick { display: flex; flex-wrap: wrap; gap: 6px; }
+.catpick button { border: 0; border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 700; background: var(--field); color: var(--ink); display: flex; align-items: center; gap: 6px; transition: transform .12s; }
+.catpick button i { width: 10px; height: 10px; border-radius: 50%; background: var(--cc); }
+.catpick button[aria-pressed="true"] { background: var(--cc); color: #FFFFFF; transform: scale(1.04); }
+.catpick button[aria-pressed="true"] i { background: #FFFFFF; }
+.checks { display: flex; flex-wrap: wrap; gap: 8px; font-size: 14px; }
+.checks label { display: flex; align-items: center; gap: 8px; background: var(--field); padding: 7px 12px; border-radius: 999px; font-weight: 600; cursor: pointer; }
+.checks input { accent-color: var(--accent); width: 17px; height: 17px; }
+.primary { border: 0; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: var(--accent-ink); font: 600 16px/1 var(--f-display); padding: 14px 16px; border-radius: 14px; box-shadow: 0 6px 18px rgba(123, 63, 242, .3); transition: transform .15s; }
+.primary:hover { transform: translateY(-2px); }
+.primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 .form-foot { display: flex; gap: 12px; align-items: center; }
 .form-foot .primary { flex: 1; }
 
-.cats { display: grid; gap: 9px; }
-.cat { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; font-size: 14px; }
-.cat .bar { grid-column: 1 / -1; height: 6px; }
-.cat small { color: var(--muted); font-size: 12px; margin-left: 4px; }
+.donut-wrap { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 16px; align-items: center; }
+@media (max-width: 380px) { .donut-wrap { grid-template-columns: minmax(0, 1fr); justify-items: center; } }
+.donut { width: 112px; height: 112px; border-radius: 50%; position: relative; max-width: 100%; }
+.donut::after { content: ""; position: absolute; inset: 18px; border-radius: 50%; background: var(--sheet); }
+.donut span { position: absolute; inset: 0; display: grid; place-content: center; z-index: 1; font: 600 11px/1.1 var(--f-display); text-align: center; color: var(--muted); }
+.donut b { display: block; font-size: 24px; color: var(--ink); }
+.cats { display: grid; gap: 8px; min-width: 0; width: 100%; }
+.cat { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; font-size: 13px; }
+.cat i { width: 12px; height: 12px; border-radius: 4px; background: var(--cc); }
+.cat .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.cat small { color: var(--muted); font-size: 12px; margin-left: 4px; font-weight: 600; }
 
-.list-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
-.chips { display: flex; gap: 6px; flex-wrap: wrap; }
-.chip { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 500; }
-.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
-.day { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 14px 0 4px; border-bottom: 1px solid var(--line); }
-.item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.item:last-child { border-bottom: 0; }
-.tick { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--line); background: transparent; display: grid; place-items: center; padding: 0; }
-.tick svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.4; opacity: 0; }
-.tick[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: var(--sheet); }
+.list-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 6px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; background: var(--field); padding: 4px; border-radius: 999px; }
+.chip { border: 0; background: transparent; border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.chip[aria-pressed="true"] { background: var(--sheet); color: var(--accent); box-shadow: 0 2px 8px rgba(91, 52, 180, .15); }
+.day { font: 600 14px/1 var(--f-display); color: var(--muted); padding: 18px 0 6px; }
+.item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; gap: 12px; align-items: center; padding: 10px 12px; margin-bottom: 6px; border-radius: 16px; background: var(--field); transition: transform .12s; }
+.item:hover { transform: translateX(3px); }
+.bubble { width: 40px; height: 40px; border-radius: 14px; background: var(--cc); color: #FFFFFF; display: grid; place-items: center; font: 700 17px/1 var(--f-display); }
+.tick { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); background: var(--sheet); display: grid; place-items: center; padding: 0; transition: transform .15s; }
+.tick:hover { transform: scale(1.1); }
+.tick svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.6; opacity: 0; }
+.tick[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: #FFFFFF; }
 .tick[aria-pressed="true"] svg { opacity: 1; }
 .desc { min-width: 0; }
-.desc button { border: 0; background: none; padding: 0; text-align: left; font-weight: 500; overflow-wrap: anywhere; }
+.desc button { border: 0; background: none; padding: 0; text-align: left; font-weight: 700; overflow-wrap: anywhere; }
 .desc button:hover { color: var(--accent); }
-.meta { font-size: 12px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; }
-.tag { border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; }
-.val { font-family: var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
-.item.pend .val { background: linear-gradient(transparent 55%, var(--mark) 55%); }
-.item.done .val { color: var(--muted); }
-.del { border: 0; background: none; color: var(--muted); font-size: 13px; padding: 4px 6px; border-radius: 6px; }
-.del:hover { color: var(--warn); }
-.del.armed { background: var(--warn); color: var(--sheet); font-weight: 600; }
-.empty { text-align: center; padding: 28px 8px; color: var(--muted); display: grid; gap: 10px; justify-items: center; }
-.empty strong { color: var(--ink); font: 600 18px/1.3 var(--f-display); }
-.ghost { border: 1px dashed var(--accent); color: var(--accent); background: transparent; border-radius: 8px; padding: 8px 12px; font-weight: 600; font-size: 14px; }
+.meta { font-size: 12px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; font-weight: 600; }
+.tag { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 0 8px; }
+.tag.pend { background: var(--mark); color: var(--ink); }
+.val { font: 600 16px/1 var(--f-display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.item.done .val { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.del { border: 0; background: none; color: var(--muted); font-size: 13px; padding: 6px 8px; border-radius: 10px; }
+.del:hover { color: var(--warn); background: var(--sheet); }
+.del.armed { background: var(--warn); color: #FFFFFF; font-weight: 700; }
+@media (max-width: 480px) {
+  .item { gap: 4px 10px; }
+  .item .bubble { grid-area: b; } .item .desc { grid-area: d; } .item .val { grid-area: v; justify-self: end; }
+  .item .tick { grid-area: t; justify-self: end; width: 26px; height: 26px; } .item .del { grid-area: x; }
+  .item { grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: "b d v v" "b d t x"; }
+}
+.empty { text-align: center; padding: 32px 8px; color: var(--muted); display: grid; gap: 10px; justify-items: center; }
+.empty strong { color: var(--ink); font: 600 20px/1.3 var(--f-display); }
+.empty .dots { display: flex; gap: 6px; }
+.empty .dots i { width: 14px; height: 14px; border-radius: 50%; background: var(--cc); }
+.ghost { border: 2px dashed var(--accent); color: var(--accent); background: transparent; border-radius: 14px; padding: 9px 14px; font-weight: 700; font-size: 14px; }
 
-.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--sheet); padding: 10px 16px; border-radius: 8px; font-size: 14px; max-width: calc(100% - 32px); box-shadow: 0 6px 24px rgba(0,0,0,.2); }
-@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .4s ease; } }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--sheet); padding: 12px 18px; border-radius: 999px; font-size: 14px; font-weight: 700; max-width: calc(100% - 32px); box-shadow: 0 10px 30px rgba(0, 0, 0, .25); }
+@media (prefers-reduced-motion: no-preference) {
+  .bar i { transition: width .5s cubic-bezier(.3, 1.4, .5, 1); }
+  .toast:not([hidden]) { animation: pop .3s cubic-bezier(.3, 1.6, .5, 1); }
+  @keyframes pop { from { transform: translate(-50%, 20px) scale(.9); } }
+}
+@media (prefers-reduced-motion: reduce) { .navbtn, .primary, .item, .tick, .catpick button { transition: none; } }
 </style>
 
 <div class="wrap">
@@ -138,12 +194,12 @@ input:focus, select:focus { border-color: var(--accent); outline: none; box-shad
 
   <div class="grid">
     <div class="col">
-      <section class="panel" aria-labelledby="sum-label">
+      <section class="panel hero" aria-labelledby="sum-label">
         <p class="label" id="sum-label">Total do mês</p>
         <div class="total" id="total">R$ 0,00</div>
         <div class="split">
           <span>Pago <b class="num" id="pago">R$ 0,00</b></span>
-          <span>A pagar <b class="num hl" id="apagar">R$ 0,00</b></span>
+          <span>A pagar <b class="num" id="apagar">R$ 0,00</b></span>
         </div>
         <div class="budget" id="budget"></div>
       </section>
@@ -162,9 +218,9 @@ input:focus, select:focus { border-color: var(--accent); outline: none; box-shad
               <input type="date" id="f-data" required>
             </label>
           </div>
-          <label class="field"><span>Categoria</span>
-            <select id="f-cat"></select>
-          </label>
+          <div class="field"><span id="cat-label">Categoria</span>
+            <div class="catpick" id="f-cat" role="group" aria-labelledby="cat-label"></div>
+          </div>
           <div class="checks">
             <label><input type="checkbox" id="f-pago" checked> Já paguei</label>
             <label><input type="checkbox" id="f-fixo"> Gasto fixo (todo mês)</label>
@@ -178,7 +234,7 @@ input:focus, select:focus { border-color: var(--accent); outline: none; box-shad
 
       <section class="panel">
         <p class="label">Por categoria</p>
-        <div class="cats" id="cats"></div>
+        <div id="cats"></div>
       </section>
     </div>
 
@@ -199,6 +255,8 @@ input:focus, select:focus { border-color: var(--accent); outline: none; box-shad
 
 <script>
 const CATS = ["Moradia", "Mercado", "Alimentação", "Contas", "Transporte", "Saúde", "Educação", "Lazer", "Compras", "Outros"];
+const COR = { "Moradia": "--c1", "Mercado": "--c2", "Alimentação": "--c3", "Contas": "--c4", "Transporte": "--c7", "Saúde": "--c6", "Educação": "--c9", "Lazer": "--c5", "Compras": "--c8", "Outros": "--c10" };
+const cor = c => `var(${COR[c] || "--c10"})`;
 const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
 const MES_CURTO = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
@@ -226,7 +284,7 @@ function parseValor(str) {
 }
 const valorParaCampo = c => (c / 100).toFixed(2).replace(".", ",");
 
-const state = { mes: mesAtual(), itens: [], orcamento: null, filtro: "todos", editando: null, editOrc: false, carregando: true, db: null, semDb: false };
+const state = { mes: mesAtual(), itens: [], orcamento: null, filtro: "todos", editando: null, editOrc: false, cat: "Mercado", carregando: true, db: null, semDb: false };
 let unsubMes = null;
 
 // ---------- toast ----------
@@ -272,7 +330,7 @@ function renderBudget(total) {
     return;
   }
   if (!state.orcamento) {
-    b.innerHTML = `<div class="budget-row"><span style="color:var(--muted)">Sem limite definido</span>
+    b.innerHTML = `<div class="budget-row"><span style="opacity:.85">Sem limite definido</span>
       <button class="linkbtn" data-act="orc" ${state.semDb ? "disabled" : ""}>Definir orçamento mensal</button></div>`;
     return;
   }
@@ -282,7 +340,7 @@ function renderBudget(total) {
       <button class="linkbtn" data-act="orc">Alterar</button></div>
     <div class="bar ${resta < 0 ? "over" : ""}"><i style="width:${pct}%"></i></div>
     <div class="budget-row">${resta >= 0
-      ? `<span>Restam <b class="num">${fmt(resta)}</b></span><span style="color:var(--muted)">${Math.round(total / state.orcamento * 100)}% usado</span>`
+      ? `<span>Restam <b class="num">${fmt(resta)}</b></span><span style="opacity:.85">${Math.round(total / state.orcamento * 100)}% usado</span>`
       : `<span class="over-txt">Passou <span class="num">${fmt(-resta)}</span> do orçamento</span>`}</div>`;
 }
 
@@ -291,10 +349,12 @@ function renderCats(itens, total) {
   for (const i of itens) por[i.categoria] = (por[i.categoria] || 0) + i.valor;
   const linhas = Object.entries(por).sort((a, b) => b[1] - a[1]);
   if (!linhas.length) { $("cats").innerHTML = `<span style="color:var(--muted);font-size:14px">As categorias aparecem aqui quando você lançar gastos.</span>`; return; }
-  const max = linhas[0][1];
-  $("cats").innerHTML = linhas.map(([c, v]) => `<div class="cat">
-    <span>${esc(c)}<small>${Math.round(v / total * 100)}%</small></span><span class="num">${fmt(v)}</span>
-    <div class="bar"><i style="width:${v / max * 100}%"></i></div></div>`).join("");
+  let acc = 0;
+  const fatias = linhas.map(([c, v]) => { const a = acc; acc += v / total * 360; return `${cor(c)} ${a}deg ${acc}deg`; });
+  $("cats").innerHTML = `<div class="donut-wrap">
+    <div class="donut" style="background: conic-gradient(${fatias.join(", ")})"><span><b>${linhas.length}</b>categoria${linhas.length > 1 ? "s" : ""}</span></div>
+    <div class="cats">${linhas.map(([c, v]) => `<div class="cat" style="--cc:${cor(c)}" title="${Math.round(v / total * 100)}% do mês">
+      <i></i><span class="nm">${esc(c)}</span><span class="num">${fmt(v)}</span></div>`).join("")}</div></div>`;
 }
 
 const CHECK = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
@@ -310,7 +370,7 @@ function renderList() {
   const btnFixos = !temFixo ? `<button class="ghost" data-act="fixos">Trazer gastos fixos de ${esc(nomeMes(somaMes(state.mes, -1)).toLowerCase())}</button>` : "";
 
   if (!state.itens.length) {
-    el.innerHTML = `<div class="empty"><strong>Nenhum gasto em ${esc(nomeMes(state.mes).toLowerCase())}</strong>
+    el.innerHTML = `<div class="empty"><div class="dots">${["--c1","--c5","--c3","--c2","--c4"].map(v => `<i style="--cc:var(${v})"></i>`).join("")}</div><strong>Nenhum gasto em ${esc(nomeMes(state.mes).toLowerCase())}</strong>
       <span>Use o formulário para anotar o primeiro. Marque “Gasto fixo” em aluguel, luz e internet para repetir no mês seguinte.</span>${btnFixos}</div>`;
     return;
   }
@@ -326,11 +386,12 @@ function renderList() {
       const [, m, d] = dia.split("-");
       html += `<div class="day">${d} ${MES_CURTO[Number(m) - 1]}</div>`;
     }
-    html += `<div class="item ${i.pago ? "done" : "pend"}">
-      <button class="tick" data-act="pago" data-id="${esc(i.id)}" aria-pressed="${!!i.pago}" aria-label="${i.pago ? "Marcar como não pago" : "Marcar como pago"}">${CHECK}</button>
+    html += `<div class="item ${i.pago ? "done" : "pend"}" style="--cc:${cor(i.categoria)}">
+      <span class="bubble" aria-hidden="true">${esc((i.categoria || "?").charAt(0))}</span>
       <div class="desc"><button data-act="edit" data-id="${esc(i.id)}" title="Editar">${esc(i.desc)}</button>
-        <div class="meta"><span>${esc(i.categoria)}</span>${i.fixo ? `<span class="tag">fixo</span>` : ""}${!i.pago ? `<span>a pagar</span>` : ""}</div></div>
+        <div class="meta"><span>${esc(i.categoria)}</span>${i.fixo ? `<span class="tag">fixo</span>` : ""}${!i.pago ? `<span class="tag pend">a pagar</span>` : ""}</div></div>
       <span class="val">${fmt(i.valor)}</span>
+      <button class="tick" data-act="pago" data-id="${esc(i.id)}" aria-pressed="${!!i.pago}" aria-label="${i.pago ? "Marcar como não pago" : "Marcar como pago"}">${CHECK}</button>
       <button class="del" data-act="del" data-id="${esc(i.id)}" aria-label="Excluir ${esc(i.desc)}">✕</button>
     </div>`;
   }
@@ -349,6 +410,7 @@ function resetForm() {
   $("form").reset();
   $("f-data").value = dataPadrao();
   $("f-pago").checked = true;
+  state.cat = "Mercado"; renderCatPick();
   $("form-label").textContent = "Novo gasto";
   $("f-submit").textContent = "Adicionar gasto";
   $("f-cancel").hidden = true;
@@ -360,7 +422,7 @@ function editar(id) {
   $("f-desc").value = i.desc;
   $("f-valor").value = valorParaCampo(i.valor);
   $("f-data").value = i.data;
-  $("f-cat").value = i.categoria;
+  state.cat = CATS.includes(i.categoria) ? i.categoria : "Outros"; renderCatPick();
   $("f-pago").checked = !!i.pago;
   $("f-fixo").checked = !!i.fixo;
   $("form-label").textContent = "Editar gasto";
@@ -369,7 +431,14 @@ function editar(id) {
   $("f-desc").focus();
 }
 
-$("f-cat").innerHTML = CATS.map(c => `<option>${esc(c)}</option>`).join("");
+function renderCatPick() {
+  $("f-cat").innerHTML = CATS.map(c => `<button type="button" data-cat="${esc(c)}" style="--cc:${cor(c)}" aria-pressed="${c === state.cat}"><i></i>${esc(c)}</button>`).join("");
+}
+$("f-cat").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  state.cat = b.dataset.cat; renderCatPick();
+});
+renderCatPick();
 $("f-data").value = dataPadrao();
 
 $("form").addEventListener("submit", async e => {
@@ -381,7 +450,7 @@ $("form").addEventListener("submit", async e => {
   if (!desc) { toast("Escreva uma descrição para o gasto."); return; }
   if (!valor) { toast("Digite um valor válido, por exemplo 45,90."); $("f-valor").focus(); return; }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(data)) { toast("Escolha a data do gasto."); return; }
-  const doc = { desc, valor, data, mes: data.slice(0, 7), categoria: $("f-cat").value, pago: $("f-pago").checked, fixo: $("f-fixo").checked };
+  const doc = { desc, valor, data, mes: data.slice(0, 7), categoria: state.cat, pago: $("f-pago").checked, fixo: $("f-fixo").checked };
   const btn = $("f-submit"); btn.disabled = true;
   try {
     if (state.editando) {
