@@ -1,0 +1,504 @@
+<title>Caderneta de Gastos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: caderneta de bolso — resumo e lançamento à esquerda, lista do mês à direita; uma coluna no celular */
+:root {
+  --paper: #EEF2F6;
+  --sheet: #FFFFFF;
+  --ink: #17202A;
+  --muted: #5B6876;
+  --line: #D6DDE5;
+  --accent: #2346B8;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E2E8FA;
+  --mark: rgba(247, 214, 46, .55);
+  --ok: #1B7F52;
+  --warn: #B93D0B;
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --f-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0E1318; --sheet: #161D25; --ink: #E5EAF0; --muted: #94A1AE; --line: #2A3542;
+    --accent: #8FA7FF; --accent-ink: #0E1318; --accent-soft: #1D2847; --mark: rgba(214, 186, 40, .38);
+    --ok: #4DC48C; --warn: #F2905F; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0E1318; --sheet: #161D25; --ink: #E5EAF0; --muted: #94A1AE; --line: #2A3542;
+  --accent: #8FA7FF; --accent-ink: #0E1318; --accent-soft: #1D2847; --mark: rgba(214, 186, 40, .38);
+  --ok: #4DC48C; --warn: #F2905F; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 15px/1.5 var(--f-body); }
+.wrap { max-width: 1000px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: grid; gap: 20px; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
+
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+.brand { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.month { display: flex; align-items: center; gap: 6px; }
+.month h1 { margin: 0; font: 700 clamp(30px, 6vw, 44px)/1 var(--f-display); letter-spacing: -.02em; text-wrap: balance; min-width: 0; }
+.month h1 span { color: var(--muted); font-weight: 500; }
+.navbtn { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--sheet); font-size: 18px; line-height: 1; display: grid; place-items: center; }
+.navbtn:hover { border-color: var(--accent); color: var(--accent); }
+.today { border: 0; background: none; color: var(--accent); font-weight: 600; padding: 6px 8px; }
+
+.notice { background: var(--accent-soft); border-radius: var(--r); padding: 10px 14px; font-size: 14px; }
+
+.grid { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.col { display: grid; gap: 16px; min-width: 0; }
+.panel { background: var(--sheet); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; min-width: 0; }
+.label { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin: 0 0 6px; }
+
+.total { font: 500 34px/1.1 var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.split { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: 14px; color: var(--muted); }
+.split b { color: var(--ink); font-weight: 500; }
+.hl { background: linear-gradient(transparent 55%, var(--mark) 55%); }
+.budget { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); display: grid; gap: 8px; }
+.bar { height: 8px; border-radius: 4px; background: var(--accent-soft); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+.bar.over i { background: var(--warn); }
+.budget-row { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+.linkbtn { border: 0; background: none; color: var(--accent); padding: 0; font-weight: 600; font-size: 14px; }
+.over-txt { color: var(--warn); font-weight: 600; }
+.inline-form { display: flex; gap: 8px; }
+.inline-form input { flex: 1; min-width: 0; }
+
+form.add { display: grid; gap: 10px; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field > span { font-size: 13px; color: var(--muted); font-weight: 500; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+input[type=text], input[type=date], select { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); min-width: 0; }
+input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.checks { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; }
+.checks label { display: flex; align-items: center; gap: 6px; }
+.checks input { accent-color: var(--accent); width: 16px; height: 16px; }
+.primary { border: 0; background: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 11px 14px; border-radius: 8px; }
+.primary:disabled { opacity: .5; cursor: not-allowed; }
+.form-foot { display: flex; gap: 12px; align-items: center; }
+.form-foot .primary { flex: 1; }
+
+.cats { display: grid; gap: 9px; }
+.cat { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; font-size: 14px; }
+.cat .bar { grid-column: 1 / -1; height: 6px; }
+.cat small { color: var(--muted); font-size: 12px; margin-left: 4px; }
+
+.list-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 500; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.day { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 14px 0 4px; border-bottom: 1px solid var(--line); }
+.item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.item:last-child { border-bottom: 0; }
+.tick { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--line); background: transparent; display: grid; place-items: center; padding: 0; }
+.tick svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.4; opacity: 0; }
+.tick[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: var(--sheet); }
+.tick[aria-pressed="true"] svg { opacity: 1; }
+.desc { min-width: 0; }
+.desc button { border: 0; background: none; padding: 0; text-align: left; font-weight: 500; overflow-wrap: anywhere; }
+.desc button:hover { color: var(--accent); }
+.meta { font-size: 12px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; }
+.tag { border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; }
+.val { font-family: var(--f-num); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.item.pend .val { background: linear-gradient(transparent 55%, var(--mark) 55%); }
+.item.done .val { color: var(--muted); }
+.del { border: 0; background: none; color: var(--muted); font-size: 13px; padding: 4px 6px; border-radius: 6px; }
+.del:hover { color: var(--warn); }
+.del.armed { background: var(--warn); color: var(--sheet); font-weight: 600; }
+.empty { text-align: center; padding: 28px 8px; color: var(--muted); display: grid; gap: 10px; justify-items: center; }
+.empty strong { color: var(--ink); font: 600 18px/1.3 var(--f-display); }
+.ghost { border: 1px dashed var(--accent); color: var(--accent); background: transparent; border-radius: 8px; padding: 8px 12px; font-weight: 600; font-size: 14px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--sheet); padding: 10px 16px; border-radius: 8px; font-size: 14px; max-width: calc(100% - 32px); box-shadow: 0 6px 24px rgba(0,0,0,.2); }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .4s ease; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">Caderneta de Gastos</div>
+      <div class="month">
+        <button class="navbtn" id="prev" aria-label="Mês anterior">‹</button>
+        <h1 id="month-title">Outubro <span>2026</span></h1>
+        <button class="navbtn" id="next" aria-label="Próximo mês">›</button>
+      </div>
+    </div>
+    <button class="today" id="go-today" hidden>Voltar para o mês atual</button>
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <div class="grid">
+    <div class="col">
+      <section class="panel" aria-labelledby="sum-label">
+        <p class="label" id="sum-label">Total do mês</p>
+        <div class="total" id="total">R$ 0,00</div>
+        <div class="split">
+          <span>Pago <b class="num" id="pago">R$ 0,00</b></span>
+          <span>A pagar <b class="num hl" id="apagar">R$ 0,00</b></span>
+        </div>
+        <div class="budget" id="budget"></div>
+      </section>
+
+      <section class="panel">
+        <p class="label" id="form-label">Novo gasto</p>
+        <form class="add" id="form" autocomplete="off">
+          <label class="field"><span>Descrição</span>
+            <input type="text" id="f-desc" placeholder="Ex.: Conta de luz" maxlength="80" required>
+          </label>
+          <div class="row2">
+            <label class="field"><span>Valor (R$)</span>
+              <input type="text" id="f-valor" inputmode="decimal" placeholder="0,00" required>
+            </label>
+            <label class="field"><span>Data</span>
+              <input type="date" id="f-data" required>
+            </label>
+          </div>
+          <label class="field"><span>Categoria</span>
+            <select id="f-cat"></select>
+          </label>
+          <div class="checks">
+            <label><input type="checkbox" id="f-pago" checked> Já paguei</label>
+            <label><input type="checkbox" id="f-fixo"> Gasto fixo (todo mês)</label>
+          </div>
+          <div class="form-foot">
+            <button class="primary" id="f-submit" type="submit">Adicionar gasto</button>
+            <button class="linkbtn" id="f-cancel" type="button" hidden>Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <p class="label">Por categoria</p>
+        <div class="cats" id="cats"></div>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="list-label">
+      <div class="list-head">
+        <p class="label" id="list-label" style="margin:0">Lançamentos</p>
+        <div class="chips" role="group" aria-label="Filtrar lançamentos">
+          <button class="chip" data-f="todos" aria-pressed="true">Todos</button>
+          <button class="chip" data-f="pend" aria-pressed="false">A pagar</button>
+          <button class="chip" data-f="pagos" aria-pressed="false">Pagos</button>
+        </div>
+      </div>
+      <div id="list"></div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+const CATS = ["Moradia", "Mercado", "Alimentação", "Contas", "Transporte", "Saúde", "Educação", "Lazer", "Compras", "Outros"];
+const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const MES_CURTO = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const fmt = c => brl.format((c || 0) / 100);
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+const pad = n => String(n).padStart(2, "0");
+const hoje = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const mesAtual = () => hoje().slice(0, 7);
+function somaMes(mes, delta) {
+  const [y, m] = mes.split("-").map(Number);
+  const d = new Date(y, m - 1 + delta, 1);
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}`;
+}
+const diasNoMes = mes => { const [y, m] = mes.split("-").map(Number); return new Date(y, m, 0).getDate(); };
+const nomeMes = mes => MESES[Number(mes.slice(5, 7)) - 1];
+
+function parseValor(str) {
+  let s = String(str).replace(/[^\d,.]/g, "");
+  if (s.includes(",")) s = s.replace(/\./g, "").replace(",", ".");
+  const n = Number(s);
+  if (!s || !isFinite(n) || n <= 0) return null;
+  return Math.round(n * 100);
+}
+const valorParaCampo = c => (c / 100).toFixed(2).replace(".", ",");
+
+const state = { mes: mesAtual(), itens: [], orcamento: null, filtro: "todos", editando: null, editOrc: false, carregando: true, db: null, semDb: false };
+let unsubMes = null;
+
+// ---------- toast ----------
+let toastT;
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2800);
+}
+function erroMsg(e) {
+  if (e?.code === "invalid_argument") return "Não foi possível salvar. Só o dono desta caderneta pode registrar gastos.";
+  if (e?.code === "quota_exceeded") return "A caderneta está cheia. Exclua lançamentos antigos para continuar.";
+  return "Não foi possível salvar agora. Tente de novo em instantes.";
+}
+
+// ---------- render ----------
+function render() {
+  $("month-title").innerHTML = `${esc(nomeMes(state.mes))} <span>${state.mes.slice(0, 4)}</span>`;
+  $("go-today").hidden = state.mes === mesAtual();
+
+  const itens = state.itens;
+  const total = itens.reduce((s, i) => s + i.valor, 0);
+  const pago = itens.filter(i => i.pago).reduce((s, i) => s + i.valor, 0);
+  $("total").textContent = fmt(total);
+  $("pago").textContent = fmt(pago);
+  $("apagar").textContent = fmt(total - pago);
+
+  renderBudget(total);
+  renderCats(itens, total);
+  renderList();
+
+  const off = state.semDb;
+  for (const el of $("form").elements) el.disabled = off;
+}
+
+function renderBudget(total) {
+  const b = $("budget");
+  if (state.editOrc) {
+    if ($("orc-input")) return;
+    b.innerHTML = `<form class="inline-form" id="orc-form">
+      <input type="text" id="orc-input" inputmode="decimal" placeholder="Ex.: 3.000,00" aria-label="Orçamento mensal em reais" value="${state.orcamento ? valorParaCampo(state.orcamento) : ""}">
+      <button class="primary" type="submit">Salvar</button></form>`;
+    $("orc-input").focus();
+    return;
+  }
+  if (!state.orcamento) {
+    b.innerHTML = `<div class="budget-row"><span style="color:var(--muted)">Sem limite definido</span>
+      <button class="linkbtn" data-act="orc" ${state.semDb ? "disabled" : ""}>Definir orçamento mensal</button></div>`;
+    return;
+  }
+  const pct = Math.min(100, total / state.orcamento * 100);
+  const resta = state.orcamento - total;
+  b.innerHTML = `<div class="budget-row"><span>Orçamento <span class="num">${fmt(state.orcamento)}</span></span>
+      <button class="linkbtn" data-act="orc">Alterar</button></div>
+    <div class="bar ${resta < 0 ? "over" : ""}"><i style="width:${pct}%"></i></div>
+    <div class="budget-row">${resta >= 0
+      ? `<span>Restam <b class="num">${fmt(resta)}</b></span><span style="color:var(--muted)">${Math.round(total / state.orcamento * 100)}% usado</span>`
+      : `<span class="over-txt">Passou <span class="num">${fmt(-resta)}</span> do orçamento</span>`}</div>`;
+}
+
+function renderCats(itens, total) {
+  const por = {};
+  for (const i of itens) por[i.categoria] = (por[i.categoria] || 0) + i.valor;
+  const linhas = Object.entries(por).sort((a, b) => b[1] - a[1]);
+  if (!linhas.length) { $("cats").innerHTML = `<span style="color:var(--muted);font-size:14px">As categorias aparecem aqui quando você lançar gastos.</span>`; return; }
+  const max = linhas[0][1];
+  $("cats").innerHTML = linhas.map(([c, v]) => `<div class="cat">
+    <span>${esc(c)}<small>${Math.round(v / total * 100)}%</small></span><span class="num">${fmt(v)}</span>
+    <div class="bar"><i style="width:${v / max * 100}%"></i></div></div>`).join("");
+}
+
+const CHECK = `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>`;
+function renderList() {
+  const el = $("list");
+  if (state.semDb) {
+    el.innerHTML = `<div class="empty"><strong>Seus gastos ficam salvos aqui</strong><span>Abra esta caderneta no claude.ai com sua conta para lançar e guardar os gastos de cada mês.</span></div>`;
+    return;
+  }
+  if (state.carregando) { el.innerHTML = `<div class="empty"><span>Abrindo a caderneta…</span></div>`; return; }
+
+  const temFixo = state.itens.some(i => i.fixo);
+  const btnFixos = !temFixo ? `<button class="ghost" data-act="fixos">Trazer gastos fixos de ${esc(nomeMes(somaMes(state.mes, -1)).toLowerCase())}</button>` : "";
+
+  if (!state.itens.length) {
+    el.innerHTML = `<div class="empty"><strong>Nenhum gasto em ${esc(nomeMes(state.mes).toLowerCase())}</strong>
+      <span>Use o formulário para anotar o primeiro. Marque “Gasto fixo” em aluguel, luz e internet para repetir no mês seguinte.</span>${btnFixos}</div>`;
+    return;
+  }
+  let itens = state.itens.slice();
+  if (state.filtro === "pend") itens = itens.filter(i => !i.pago);
+  if (state.filtro === "pagos") itens = itens.filter(i => i.pago);
+  itens.sort((a, b) => b.data.localeCompare(a.data) || (b.criadoEm || 0) - (a.criadoEm || 0));
+
+  let html = "", dia = null;
+  for (const i of itens) {
+    if (i.data !== dia) {
+      dia = i.data;
+      const [, m, d] = dia.split("-");
+      html += `<div class="day">${d} ${MES_CURTO[Number(m) - 1]}</div>`;
+    }
+    html += `<div class="item ${i.pago ? "done" : "pend"}">
+      <button class="tick" data-act="pago" data-id="${esc(i.id)}" aria-pressed="${!!i.pago}" aria-label="${i.pago ? "Marcar como não pago" : "Marcar como pago"}">${CHECK}</button>
+      <div class="desc"><button data-act="edit" data-id="${esc(i.id)}" title="Editar">${esc(i.desc)}</button>
+        <div class="meta"><span>${esc(i.categoria)}</span>${i.fixo ? `<span class="tag">fixo</span>` : ""}${!i.pago ? `<span>a pagar</span>` : ""}</div></div>
+      <span class="val">${fmt(i.valor)}</span>
+      <button class="del" data-act="del" data-id="${esc(i.id)}" aria-label="Excluir ${esc(i.desc)}">✕</button>
+    </div>`;
+  }
+  if (!itens.length) html = `<div class="empty"><span>${state.filtro === "pend" ? "Tudo pago neste mês." : "Nada pago ainda neste mês."}</span></div>`;
+  if (btnFixos) html += `<div style="padding-top:14px">${btnFixos}</div>`;
+  el.innerHTML = html;
+}
+
+// ---------- form ----------
+function dataPadrao() {
+  if (state.mes === mesAtual()) return hoje();
+  return `${state.mes}-01`;
+}
+function resetForm() {
+  state.editando = null;
+  $("form").reset();
+  $("f-data").value = dataPadrao();
+  $("f-pago").checked = true;
+  $("form-label").textContent = "Novo gasto";
+  $("f-submit").textContent = "Adicionar gasto";
+  $("f-cancel").hidden = true;
+}
+function editar(id) {
+  const i = state.itens.find(x => x.id === id);
+  if (!i) return;
+  state.editando = id;
+  $("f-desc").value = i.desc;
+  $("f-valor").value = valorParaCampo(i.valor);
+  $("f-data").value = i.data;
+  $("f-cat").value = i.categoria;
+  $("f-pago").checked = !!i.pago;
+  $("f-fixo").checked = !!i.fixo;
+  $("form-label").textContent = "Editar gasto";
+  $("f-submit").textContent = "Salvar alteração";
+  $("f-cancel").hidden = false;
+  $("f-desc").focus();
+}
+
+$("f-cat").innerHTML = CATS.map(c => `<option>${esc(c)}</option>`).join("");
+$("f-data").value = dataPadrao();
+
+$("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!state.db) return;
+  const desc = $("f-desc").value.trim();
+  const valor = parseValor($("f-valor").value);
+  const data = $("f-data").value;
+  if (!desc) { toast("Escreva uma descrição para o gasto."); return; }
+  if (!valor) { toast("Digite um valor válido, por exemplo 45,90."); $("f-valor").focus(); return; }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(data)) { toast("Escolha a data do gasto."); return; }
+  const doc = { desc, valor, data, mes: data.slice(0, 7), categoria: $("f-cat").value, pago: $("f-pago").checked, fixo: $("f-fixo").checked };
+  const btn = $("f-submit"); btn.disabled = true;
+  try {
+    if (state.editando) {
+      await state.db.collection("gastos").doc(state.editando).update(doc);
+      toast("Gasto atualizado.");
+    } else {
+      await state.db.collection("gastos").add({ ...doc, criadoEm: Date.now() });
+      toast(doc.mes === state.mes ? "Gasto anotado." : `Gasto anotado em ${nomeMes(doc.mes).toLowerCase()}.`);
+    }
+    resetForm();
+  } catch (err) { toast(erroMsg(err)); }
+  finally { btn.disabled = false; }
+});
+$("f-cancel").addEventListener("click", resetForm);
+
+// ---------- actions ----------
+let armedId = null, armedT;
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-act]");
+  if (!b) return;
+  const act = b.dataset.act, id = b.dataset.id;
+  if (act === "orc") { state.editOrc = true; render(); return; }
+  if (act === "edit") { editar(id); return; }
+  if (!state.db) return;
+  if (act === "pago") {
+    const i = state.itens.find(x => x.id === id); if (!i) return;
+    try { await state.db.collection("gastos").doc(id).update({ pago: !i.pago }); } catch (err) { toast(erroMsg(err)); }
+  } else if (act === "del") {
+    if (armedId !== id) {
+      document.querySelectorAll(".del.armed").forEach(x => { x.classList.remove("armed"); x.textContent = "✕"; });
+      armedId = id; b.classList.add("armed"); b.textContent = "Excluir?";
+      clearTimeout(armedT); armedT = setTimeout(() => { armedId = null; b.classList.remove("armed"); b.textContent = "✕"; }, 3000);
+      return;
+    }
+    armedId = null;
+    try {
+      await state.db.collection("gastos").doc(id).delete();
+      if (state.editando === id) resetForm();
+      toast("Gasto excluído.");
+    } catch (err) { toast(erroMsg(err)); }
+  } else if (act === "fixos") {
+    b.disabled = true;
+    try {
+      const ant = somaMes(state.mes, -1);
+      const snap = await state.db.collection("gastos").where("mes", "==", ant).where("fixo", "==", true).get();
+      if (snap.empty) { toast(`Nenhum gasto fixo em ${nomeMes(ant).toLowerCase()}.`); b.disabled = false; return; }
+      const ult = diasNoMes(state.mes);
+      for (const d of snap.docs) {
+        const g = d.data();
+        const dia = Math.min(Number(g.data.slice(8, 10)), ult);
+        const data = `${state.mes}-${pad(dia)}`;
+        await state.db.collection("gastos").add({ desc: g.desc, valor: g.valor, categoria: g.categoria, data, mes: state.mes, pago: false, fixo: true, criadoEm: Date.now() });
+      }
+      toast(`${snap.size} gasto${snap.size > 1 ? "s" : ""} fixo${snap.size > 1 ? "s" : ""} copiado${snap.size > 1 ? "s" : ""} como a pagar.`);
+    } catch (err) { toast(erroMsg(err)); b.disabled = false; }
+  }
+});
+
+document.addEventListener("submit", async e => {
+  if (e.target.id !== "orc-form") return;
+  e.preventDefault();
+  const raw = $("orc-input").value.trim();
+  const v = raw ? parseValor(raw) : 0;
+  if (v === null) { toast("Digite um valor válido, por exemplo 3.000,00."); return; }
+  try {
+    await state.db.doc("config/orcamento").set({ mensal: v });
+    state.editOrc = false; render();
+    toast(v ? "Orçamento salvo." : "Orçamento removido.");
+  } catch (err) { toast(erroMsg(err)); }
+});
+
+document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+  state.filtro = c.dataset.f;
+  document.querySelectorAll(".chip").forEach(x => x.setAttribute("aria-pressed", String(x === c)));
+  renderList();
+}));
+
+function irPara(mes) {
+  state.mes = mes; state.itens = []; state.carregando = true;
+  if (!state.editando) $("f-data").value = dataPadrao();
+  render(); assinarMes();
+}
+$("prev").addEventListener("click", () => irPara(somaMes(state.mes, -1)));
+$("next").addEventListener("click", () => irPara(somaMes(state.mes, 1)));
+$("go-today").addEventListener("click", () => irPara(mesAtual()));
+
+// ---------- data ----------
+function assinarMes() {
+  if (!state.db) return;
+  if (unsubMes) unsubMes();
+  unsubMes = state.db.collection("gastos").where("mes", "==", state.mes).onSnapshot(snap => {
+    state.itens = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(i => typeof i.valor === "number" && i.data);
+    state.carregando = false;
+    render();
+  }, err => {
+    state.carregando = false;
+    if (err.code === "unavailable") setTimeout(assinarMes, 3000);
+    else { $("notice").textContent = "A caderneta não pôde ser carregada nesta visualização."; $("notice").hidden = false; }
+    render();
+  });
+}
+
+render();
+(async () => {
+  const db = window.claude ? await window.claude.use("db") : null;
+  if (!db) {
+    state.semDb = true; state.carregando = false;
+    $("notice").textContent = "Esta visualização não consegue salvar. Abra a caderneta no claude.ai, com sua conta, para anotar seus gastos.";
+    $("notice").hidden = false;
+    render(); return;
+  }
+  state.db = db;
+  db.doc("config/orcamento").onSnapshot(s => {
+    state.orcamento = s.exists ? (s.data().mensal || null) : null;
+    render();
+  }, () => {});
+  assinarMes();
+  render();
+})();
+</script>
